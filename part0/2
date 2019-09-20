@@ -1,0 +1,8 @@
+note over browser:
+user fills the form and
+clicks to Save button
+end note
+
+browser->browser: Add new note to notes\nand re-render
+browser->server: HTTP POST /new_note_spa {note: "i saved my second note, yay!", date: "2019-09-20T20:46:54.986Z"}
+server-->browser: Response Status: 201, Created: {message: "note created"}
