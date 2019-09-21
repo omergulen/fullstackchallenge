@@ -11,13 +11,15 @@ const Content = (props) => {
   return (
     <>
       {props.content.map(el => (
-        <p>
-          {el.part} {el.exercises}
-        </p>
+        <Part part={el.part} exercises={el.exercises} />
       ))}
     </>
   )
 }
+
+const Part = (props) => (
+  <p>{props.part} {props.exercises}</p>
+)
 
 const Total = (props) => {
   return (
