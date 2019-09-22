@@ -30,11 +30,19 @@ const Statistics = ({ good, neutral, bad }) => {
   return (
     <div>
       <Title text='statistics' />
-      <Statistic text='good' count={good} />
-      <Statistic text='neutral' count={neutral} />
-      <Statistic text='bad' count={bad} />
-      <Statistic text='average' count={(good * 1 + bad * -1) / total} />
-      <Statistic text='positive' count={good/total} unit='%' />
+      {
+        total > 0 ?
+          <div>
+            <Statistic text='good' count={good} />
+            <Statistic text='neutral' count={neutral} />
+            <Statistic text='bad' count={bad} />
+            <Statistic text='average' count={(good * 1 + bad * -1) / total} />
+            <Statistic text='positive' count={good / total} unit='%' />
+          </div> :
+          <p>
+            No feedback given
+          </p>
+      }
     </div>
   )
 }
