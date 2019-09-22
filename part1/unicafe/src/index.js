@@ -22,7 +22,14 @@ const GiveFeedback = ({ handleGood, handleNeutral, handleBad }) => {
   )
 }
 
-const Statistic = ({ text, value, unit }) => (<p>{text} {value} {unit ? unit : ''}</p>)
+const Statistic = ({ text, value, unit }) => {
+  return (
+    <tr>
+      <td>{text}</td>
+      <td>{value} {unit ? unit : ''}</td>
+    </tr>
+  )
+}
 
 const Statistics = ({ good, neutral, bad }) => {
   const total = good + neutral + bad
@@ -32,13 +39,15 @@ const Statistics = ({ good, neutral, bad }) => {
       <Title text='statistics' />
       {
         total > 0 ?
-          <div>
-            <Statistic text='good' value={good} />
-            <Statistic text='neutral' value={neutral} />
-            <Statistic text='bad' value={bad} />
-            <Statistic text='average' value={(good * 1 + bad * -1) / total} />
-            <Statistic text='positive' value={good / total} unit='%' />
-          </div> :
+          <table>
+            <tbody>
+              <Statistic text='good' value={good} />
+              <Statistic text='neutral' value={neutral} />
+              <Statistic text='bad' value={bad} />
+              <Statistic text='average' value={(good * 1 + bad * -1) / total} />
+              <Statistic text='positive' value={good / total} unit='%' />
+            </tbody>
+          </table> :
           <p>
             No feedback given
           </p>
