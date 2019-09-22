@@ -22,15 +22,19 @@ const GiveFeedback = ({ handleGood, handleNeutral, handleBad }) => {
   )
 }
 
-const Statistic = ({ text, count }) => (<p>{text} {count}</p>)
+const Statistic = ({ text, count, unit }) => (<p>{text} {count} {unit ? unit : ''}</p>)
 
 const Statistics = ({ good, neutral, bad }) => {
+  const total = good + neutral + bad
+
   return (
     <div>
       <Title text='statistics' />
       <Statistic text='good' count={good} />
       <Statistic text='neutral' count={neutral} />
       <Statistic text='bad' count={bad} />
+      <Statistic text='average' count={(good * 1 + bad * -1) / total} />
+      <Statistic text='positive' count={good/total} unit='%' />
     </div>
   )
 }
