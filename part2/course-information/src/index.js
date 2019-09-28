@@ -50,7 +50,7 @@ const App = () => {
   ]
 
   const coursesRenderer = () => {
-    return courses.map(course => <Course course={course} />)
+    return courses.map(course => <Course key={course.id} course={course} />)
   }
 
   return (

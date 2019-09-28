@@ -33,7 +33,7 @@ const Part = (props) => (
 
 const Total = ({ course }) => {
   return (
-    <b>Number of exercises {course.parts.map(el => el.exercises).reduce((a, b) => a + b, 0)}</b>
+    <b>Number of exercises {course.parts.reduce((a, b) => a + b.exercises, 0)}</b>
   )
 }
 
