@@ -13,8 +13,12 @@ const App = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    setPeople(people.concat({ name: newName }))
 
+    if (people.find(el => el.name === newName)){
+      alert(`${newName} is already added to phonebook`)
+    } else {
+      setPeople(people.concat({ name: newName }))
+    }
   }
 
   const renderRows = () => people.map(person => <li key={person.name} >{person.name}</li>)
