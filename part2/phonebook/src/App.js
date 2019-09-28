@@ -5,8 +5,13 @@ const App = () => {
     { name: 'Arto Hellas', phone: '040-1234567' },
     { name: 'John Doe', phone: '123-4567890' }
   ])
+  const [filterName, setFilterName] = useState('')
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
+
+  const handleFilterNameChange = (e) => {
+    setFilterName(e.target.value)
+  }
 
   const handleNewNameChange = (e) => {
     setNewName(e.target.value)
@@ -26,11 +31,17 @@ const App = () => {
     }
   }
 
-  const renderRows = () => people.map(person => <li key={person.name} >{person.name} - {person.phone}</li>)
+  const filterRows = (rows) => rows.filter(el => el.name.toLowerCase().includes(filterName))
+
+  const renderRows = () => filterRows(people).map(person => <li key={person.name} >{person.name} - {person.phone}</li>)
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>
+        filter shown with <input value={filterName} onChange={handleFilterNameChange} />
+      </div>
+      <h2>add new</h2>
       <form onSubmit={handleSubmit}>
         <div>
           name: <input value={newName} onChange={handleNewNameChange} />
