@@ -1,5 +1,38 @@
 import React, { useState } from 'react'
 
+const Header = ({ title }) => <h2>{title}</h2>
+
+const Filter = ({ handleFilterNameChange, filterName }) => {
+  return (
+    <div>
+      filter shown with <input value={filterName} onChange={handleFilterNameChange} />
+    </div>
+  )
+}
+
+const PersonForm = ({ newName, handleNameChange, newPhone, handlePhoneChange, handleSubmit }) => (
+  <form onSubmit={handleSubmit}>
+    <div>
+      name: <input value={newName} onChange={handleNameChange} />
+    </div>
+    <div>
+      phone: <input value={newPhone} onChange={handlePhoneChange} />
+    </div>
+    <div>
+      <button type="submit">add</button>
+    </div>
+  </form>
+)
+
+const People = ({ people, filterName }) => {
+  const filterRows = (rows) => rows.filter(el => el.name.toLowerCase().includes(filterName))
+  return (
+    <ol>
+      {filterRows(people).map(person => <li key={person.name} >{person.name} - {person.phone}</li>)}
+    </ol>
+  )
+}
+
 const App = () => {
   const [people, setPeople] = useState([
     { name: 'Arto Hellas', phone: '040-1234567' },
@@ -31,32 +64,21 @@ const App = () => {
     }
   }
 
-  const filterRows = (rows) => rows.filter(el => el.name.toLowerCase().includes(filterName))
-
-  const renderRows = () => filterRows(people).map(person => <li key={person.name} >{person.name} - {person.phone}</li>)
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <div>
-        filter shown with <input value={filterName} onChange={handleFilterNameChange} />
-      </div>
-      <h2>add new</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          name: <input value={newName} onChange={handleNewNameChange} />
-        </div>
-        <div>
-          phone: <input value={newPhone} onChange={handleNewPhoneChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <ol>
-        {renderRows()}
-      </ol>
+      <Header title='Phonebook' />
+      <Filter filterName={filterName} handleFilterNameChange={handleFilterNameChange} />
+      <Header title='add new' />
+      <PersonForm
+        newName={newName}
+        newPhone={newPhone}
+        handleNameChange={handleNewNameChange}
+        handlePhoneChange={handleNewPhoneChange}
+        handleSubmit={handleSubmit}
+      />
+      <Header title='Numbers' />
+      <People people={people} filterName={filterName} />
     </div>
   )
 }
