@@ -23,7 +23,7 @@ const Warning = ({ length }) => {
   }
 }
 
-const Flag = ({ source }) => (<img style={{ width: 200 }} src={source} alt="country flag" />)
+const Image = ({ source }) => (<img style={{ width: 200 }} src={source} alt="country flag" />)
 
 const CountryList = ({ countries, handleFilterNameChange }) => (
   <ul>
@@ -57,7 +57,39 @@ const SingleCountry = ({ country }) => {
       <Property property="Population" value={country.population} />
       <SubHeader title="Languages" />
       <Languages languages={country.languages} />
-      <Flag source={country.flag} />
+      <Image source={country.flag} />
+      <Weather city={country.capital} />
+    </div>
+  )
+}
+
+const Weather = ({ city }) => {
+  const [weather, setWeather] = useState({})
+  axios.get(`http://api.weatherstack.com/current?access_key=0eff86f07265bf7c84bc7273c7a711a9&query=${city}`)
+    .then((response => {
+      const { temperature, weather_icons, wind_speed, wind_dir } = response.data.current;
+      const weather = {
+        temperature,
+        weather_icons,
+        wind_speed,
+        wind_dir
+      }
+      setWeather(weather);
+    }))
+
+  return (
+    <div>
+      {
+        weather && weather.temperature ?
+          <div>
+            <SubHeader title={'Weather in ' + city} />
+            <Property property="Temperature" value={weather.temperature + ' celcius'} />
+            <Image source={weather.weather_icons[0]} />
+            <Property property="Wind Speed" value={weather.wind_speed} />
+            <Property property="Wind Direction" value={weather.wind_dir} />
+          </div> :
+          <p>Loading...</p>
+      }
     </div>
   )
 }
