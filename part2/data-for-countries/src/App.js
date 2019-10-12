@@ -4,7 +4,7 @@ import axios from 'axios';
 const Filter = ({ handleFilterNameChange, filterName }) => {
   return (
     <div>
-      find countries <input value={filterName} onChange={handleFilterNameChange} />
+      find countries <input value={filterName} onChange={e => handleFilterNameChange(e.target.value)} />
     </div>
   )
 }
@@ -23,13 +23,16 @@ const Warning = ({ length }) => {
   }
 }
 
-const Flag = ({ source }) => (<img src={source} alt="country flag" />)
+const Flag = ({ source }) => (<img style={{ width: 200 }} src={source} alt="country flag" />)
 
-const CountryList = ({ countries }) => (
+const CountryList = ({ countries, handleFilterNameChange }) => (
   <ul>
     {countries.map((el, i) => {
       return (
-        <li key={el.name + i}>{el.name}</li>
+        <li key={el.name + i}>
+          {el.name}
+          <button onClick={() => handleFilterNameChange(el.name)}>Show</button>
+        </li>
       )
     })}
   </ul>
@@ -59,12 +62,12 @@ const SingleCountry = ({ country }) => {
   )
 }
 
-const Body = ({ filteredCountries }) => {
+const Body = ({ filteredCountries, handleFilterNameChange }) => {
   const length = filteredCountries.length;
   if (length === 1) {
     return (<SingleCountry country={filteredCountries[0]} />);
   } else if (length < 10 && length > 0) {
-    return (<CountryList countries={filteredCountries} />);
+    return (<CountryList handleFilterNameChange={handleFilterNameChange} countries={filteredCountries} />);
   } else if (length < 0) {
     return (<Warning length={length} />);
   } else {
@@ -76,8 +79,8 @@ function App() {
   const [countries, setCountries] = useState([])
   const [filterName, setFilterName] = useState('')
 
-  const handleFilterNameChange = (e) => {
-    setFilterName(e.target.value)
+  const handleFilterNameChange = (name) => {
+    setFilterName(name);
   }
 
   useEffect(() => {
@@ -91,7 +94,7 @@ function App() {
   return (
     <div>
       <Filter filterName={filterName} handleFilterNameChange={handleFilterNameChange} />
-      {countries.length > 0 ? <Body filteredCountries={countries.filter(el => el.name.toLowerCase().includes(filterName))} /> : ''}
+      {countries.length > 0 ? <Body handleFilterNameChange={handleFilterNameChange} filteredCountries={countries.filter(el => el.name.toLowerCase().includes(filterName.toLowerCase()))} /> : ''}
     </div>
   );
 }
