@@ -66,7 +66,19 @@ const App = () => {
     e.preventDefault()
 
     if (people.find(el => el.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
+      const result = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
+      if (result) {
+        const id = people.find(el => el.name === newName).id
+        peopleDB.update(id, {
+          name: newName,
+          number: newPhone,
+          id
+        }).then(updatedPerson => {
+          setPeople(people.map(person =>
+            person.id === id ? updatedPerson : person
+          ))
+        })
+      }
     } else {
       peopleDB.create(
         {
