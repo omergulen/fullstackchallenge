@@ -25,11 +25,17 @@ const PersonForm = ({ newName, handleNameChange, newPhone, handlePhoneChange, ha
   </form>
 )
 
-const People = ({ people, filterName }) => {
+const People = ({ people, filterName, handleDelete }) => {
   const filterRows = (rows) => rows.filter(el => el.name.toLowerCase().includes(filterName))
+
   return (
     <ol>
-      {filterRows(people).map(person => <li key={person.name} >{person.name} - {person.number}</li>)}
+      {filterRows(people).map(person =>
+        <li
+          key={person.name}>
+          {person.name} - {person.number}
+          <b style={{ color: 'red', marginLeft: 4 }} onClick={() => handleDelete(person)}>X</b>
+        </li>)}
     </ol>
   )
 }
@@ -71,6 +77,14 @@ const App = () => {
     }
   }
 
+  const handleDelete = person => {
+    const result = window.confirm(`Do you really want to delete ${person.name}?`);
+    if (result) {
+      peopleDB.deletePerson(person.id).then(() => {
+        setPeople(people.filter(p => p.id !== person.id))
+      })
+    }
+  }
 
   return (
     <div>
@@ -85,7 +99,7 @@ const App = () => {
         handleSubmit={handleSubmit}
       />
       <Header title='Numbers' />
-      <People people={people} filterName={filterName} />
+      <People people={people} filterName={filterName} handleDelete={handleDelete} />
     </div>
   )
 }
