@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import peopleDB from './services/people'
 
 const Header = ({ title }) => <h2>{title}</h2>
 
@@ -41,11 +41,7 @@ const App = () => {
   const [newPhone, setNewPhone] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/people')
-      .then(response => {
-        setPeople(response.data)
-      })
+    peopleDB.getAll().then(data => setPeople(data))
   }, [])
 
   const handleFilterNameChange = (e) => {
@@ -66,12 +62,12 @@ const App = () => {
     if (people.find(el => el.name === newName)) {
       alert(`${newName} is already added to phonebook`)
     } else {
-      axios.post('http://localhost:3001/people',
-      { name: newName,
-        number: newPhone,
-        id: people[people.length - 1].id + 1
-      }).then(response => response.data)
-        .then(newPerson => setPeople(people.concat(newPerson)))
+      peopleDB.create(
+        {
+          name: newName,
+          number: newPhone,
+          id: people[people.length - 1].id + 1
+        }).then(newPerson => setPeople(people.concat(newPerson)))
     }
   }
 
