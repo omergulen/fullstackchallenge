@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import peopleDB from './services/people'
+import './App.css';
 
 const Header = ({ title }) => <h2>{title}</h2>
 
@@ -10,6 +11,14 @@ const Filter = ({ handleFilterNameChange, filterName }) => {
     </div>
   )
 }
+
+const Notification = ({ message, type }) => (
+  message ? (
+    <div className={type && type === 'error' ? 'error' : 'success'}>
+      <p>{message}</p>
+    </div>
+  ) : ''
+)
 
 const PersonForm = ({ newName, handleNameChange, newPhone, handlePhoneChange, handleSubmit }) => (
   <form onSubmit={handleSubmit}>
@@ -45,6 +54,7 @@ const App = () => {
   const [filterName, setFilterName] = useState('')
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
+  const [notification, setNotification] = useState({ message: 'Page is successfully loaded.', type: 'success' })
 
   useEffect(() => {
     peopleDB.getAll().then(data => setPeople(data))
@@ -77,6 +87,10 @@ const App = () => {
           setPeople(people.map(person =>
             person.id === id ? updatedPerson : person
           ))
+          setNotification({
+            message: `Information of ${newName} has been updated.`,
+            type: 'success'
+          })
         })
       }
     } else {
@@ -85,22 +99,41 @@ const App = () => {
           name: newName,
           number: newPhone,
           id: people[people.length - 1].id + 1
-        }).then(newPerson => setPeople(people.concat(newPerson)))
+        }).then(newPerson => {
+          setPeople(people.concat(newPerson))
+          setNotification({
+            message: `Person ${newName} has been saved.`,
+            type: 'success'
+          })
+        })
     }
   }
 
   const handleDelete = person => {
     const result = window.confirm(`Do you really want to delete ${person.name}?`);
     if (result) {
-      peopleDB.deletePerson(person.id).then(() => {
-        setPeople(people.filter(p => p.id !== person.id))
-      })
+      peopleDB.deletePerson(person.id)
+        .then(() => {
+          setPeople(people.filter(p => p.id !== person.id))
+          setNotification({
+            message: `Information of ${person.name} has been deleted.`,
+            type: 'success'
+          })
+        })
+        .catch(e => {
+          setNotification({
+            message: `Information of ${person.name} has already been removed from the serer.`,
+            type: 'error'
+          })
+          setPeople(people.filter(p => p.id !== person.id))
+        })
     }
   }
 
   return (
     <div>
       <Header title='Phonebook' />
+      <Notification message={notification.message} type={notification.type} />
       <Filter filterName={filterName} handleFilterNameChange={handleFilterNameChange} />
       <Header title='add new' />
       <PersonForm
