@@ -1,8 +1,10 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
 
 app.use(bodyParser.json())
+app.use(morgan(':method :url :status :response-time ms - :res[content-length]'))
 
 let people = [
   {
@@ -69,7 +71,7 @@ app.post('/api/people', (req, res) => {
     return res.status(400).json({
       error: 'number missing'
     })
-  } else if (people.find(per => per.name === body.name)){
+  } else if (people.find(per => per.name === body.name)) {
     return res.status(400).json({
       error: 'name must be unique'
     })
@@ -86,6 +88,12 @@ app.post('/api/people', (req, res) => {
 
   res.json(person)
 })
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
 
 const PORT = 3001
 app.listen(PORT, () => {
