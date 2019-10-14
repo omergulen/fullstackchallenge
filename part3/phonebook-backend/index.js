@@ -1,5 +1,8 @@
 const express = require('express')
 const app = express()
+const bodyParser = require('body-parser')
+
+app.use(bodyParser.json())
 
 let people = [
   {
@@ -24,6 +27,14 @@ let people = [
   }
 ]
 
+function getRandomArbitrary(min, max) {
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
+app.get('/info', (req, res) => {
+  res.send(`<p>Phonebook has info for ${people.length} people</p><p>${new Date()}</p>`)
+})
+
 app.get('/api/people', (req, res) => {
   res.json(people)
 })
@@ -46,8 +57,34 @@ app.delete('/api/people/:id', (req, res) => {
   res.status(204).end()
 })
 
-app.get('/info', (req, res) => {
-  res.send(`<p>Phonebook has info for ${people.length} people</p><p>${new Date()}</p>`)
+app.post('/api/people', (req, res) => {
+  const id = getRandomArbitrary(0, Number.MAX_SAFE_INTEGER);
+  const body = req.body
+
+  if (!body.name) {
+    return res.status(400).json({
+      error: 'name missing'
+    })
+  } else if (!body.number) {
+    return res.status(400).json({
+      error: 'number missing'
+    })
+  } else if (people.find(per => per.name === body.name)){
+    return res.status(400).json({
+      error: 'name must be unique'
+    })
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    date: new Date(),
+    id
+  }
+
+  people = people.concat(person)
+
+  res.json(person)
 })
 
 const PORT = 3001
