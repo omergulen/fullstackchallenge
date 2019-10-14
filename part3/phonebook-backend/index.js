@@ -28,6 +28,17 @@ app.get('/api/people', (req, res) => {
   res.json(people)
 })
 
+app.get('/api/people/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const person = people.find(per => per.id === id)
+
+  if (person) {
+    res.json(person)
+  } else {
+    res.status(404).end()
+  }
+})
+
 app.get('/info', (req, res) => {
   res.send(`<p>Phonebook has info for ${people.length} people</p><p>${new Date()}</p>`)
 })
